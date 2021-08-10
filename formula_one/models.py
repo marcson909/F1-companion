@@ -8,6 +8,9 @@ class League(models.Model):
     is_public = models.BooleanField(default=True)
     duration = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
 class Driver(models.Model):
     driver_ref = models.CharField(max_length=255)
     number = models.IntegerField()
@@ -23,6 +26,9 @@ class Team(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner_teams")
     date_created = models.DateField(auto_now_add=True)
     drivers = models.ForeignKey(Driver, on_delete=models.CASCADE, related_name="driver_teams")
+
+    def __str__(self):
+        return self.name
 
 # class Round(models.Model):
 #     num = models.IntegerField()
