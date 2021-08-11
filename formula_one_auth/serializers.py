@@ -1,6 +1,6 @@
 from rest_framework import serializers
+from rest_framework_jwt.settings import api_settings
 from django.contrib.auth.models import User
-from formula_one.serializers import *
 
 ## Serializes new user sign ups that responds with the new user's information including a new token.
 class UserSerializerWithToken(serializers.ModelSerializer):
@@ -26,8 +26,7 @@ class UserSerializerWithToken(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['token', 'username', 'password']
-
+        fields = ['username', 'password','token']
 
 class UserSerializer(serializers.ModelSerializer):
 
