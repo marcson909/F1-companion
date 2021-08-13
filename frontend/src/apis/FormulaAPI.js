@@ -95,6 +95,38 @@ const BASE_URL = 'http://localhost:8000/'
     return await tryCatchFetchUrlOnly(url)
   }
 
+  const getCurrentDrivers = async () => {
+    let url = `http://ergast.com/api/f1/2021/drivers.json`
+  
+    return await tryCatchFetchUrlOnly(url)
+  }
+
+  const getDriverStandings = async () => {
+    console.log('getting driver standings')
+    let url = `http://ergast.com/api/f1/current/driverStandings.json`
+  
+    return await tryCatchFetchUrlOnly(url)
+  }
+
+  const getTeamStandings = async () => {
+    console.log('getting team standings')
+    let url = `http://ergast.com/api/f1/current/constructorStandings.json`
+  
+    return await tryCatchFetchUrlOnly(url)
+  }
+
+  const getTeamStandingsById = async (teamId) => {
+    let url = `http://ergast.com/api/f1/constructors/${teamId}/constructorStandings.json`
+     
+    return await tryCatchFetchUrlOnly(url)
+  }
+
+  const getTeamById = async (teamId) => {
+    let url = `http://ergast.com/api/f1/constructors/${teamId}.json`
+     
+    return await tryCatchFetchUrlOnly(url)
+  }
+
  
 
   const myExport = {
@@ -103,6 +135,11 @@ const BASE_URL = 'http://localhost:8000/'
     getCurrentSeason,
     getRaceByRound,
     getQualiByRound,
+    getCurrentDrivers,
+    getDriverStandings,
+    getTeamStandings,
+    getTeamStandingsById,
+    getTeamById,
 
   }
   

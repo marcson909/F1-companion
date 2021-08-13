@@ -15,58 +15,82 @@ const RacePage = (props) => {
 
     const [race, setRace] = useState(null)
     const [qual, setQual] = useState(null)
-
-
     const user = useContext(UserContext)
-    console.log(useContext(UserContext), 'usecontext')
+
 
      // helper methods
-  const getRaceInfo = async () => {
-    console.log("hey we're at get race info")
-    try {
-      let raceRound = props.match.params.raceRound
+  // const getRaceInfo = async () => {
+  //   console.log("hey we're at get race info")
+  //   try {
+  //     let raceRound = props.match.params.raceRound
 
-      let raceData = await FormulaAPI.getRaceByRound(raceRound)
-      raceData = raceData['MRData']['RaceTable']['Races'][0]
+  //     let raceData = await FormulaAPI.getRaceByRound(raceRound)
+  //     raceData = raceData['MRData']['RaceTable']['Races'][0]
 
-      if (raceData) {
-        setRace( raceData )
+  //     if (raceData) {
+  //       setRace( raceData )
+  //     }
+  //   }
+  //   catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+  // const getQualiInfo = async () => {
+  //   console.log("hey we're at get race info")
+  //   try {
+  //     let raceRound = props.match.params.raceRound
+
+  //     let qualiData = await FormulaAPI.getQualiByRound(raceRound)
+  //     qualiData = qualiData['MRData']['RaceTable']['Races'][0]
+
+  //     if (qualiData) {
+  //       setQual( qualiData )
+  //     }
+  //   }
+  //   catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+  useEffect(() => {
+      const getRaceInfo = async () => {
+        console.log("hey we're at get race info")
+        try {
+          let raceRound = props.match.params.raceRound
+    
+          let raceData = await FormulaAPI.getRaceByRound(raceRound)
+          raceData = raceData['MRData']['RaceTable']['Races'][0]
+    
+          if (raceData) {
+            setRace( raceData )
+          }
+        }
+        catch (error) {
+          console.log(error)
+        }
       }
-    }
-    catch (error) {
-      console.log(error)
-    }
-  }
-
-  const getQualiInfo = async () => {
-    console.log("hey we're at get race info")
-    try {
-      let raceRound = props.match.params.raceRound
-
-      let qualiData = await FormulaAPI.getQualiByRound(raceRound)
-      qualiData = qualiData['MRData']['RaceTable']['Races'][0]
-
-      if (qualiData) {
-        setQual( qualiData )
-      }
-    }
-    catch (error) {
-      console.log(error)
-    }
-  }
-
-    useEffect(() => {
-    if(race == null){
       getRaceInfo();
-    }
-      
   }, [])
 
   useEffect(() => {
-    if(qual == null){
-      getQualiInfo();
-    }
-      
+      const getQualiInfo = async () => {
+        console.log("hey we're at get race info")
+        try {
+          let raceRound = props.match.params.raceRound
+    
+          let qualiData = await FormulaAPI.getQualiByRound(raceRound)
+          qualiData = qualiData['MRData']['RaceTable']['Races'][0]
+    
+          if (qualiData) {
+            setQual( qualiData )
+          }
+        }
+        catch (error) {
+          console.log(error)
+        }
+      }
+    getQualiInfo();
   }, [])
 
    // const renderRaceCircuit = () => {
@@ -92,7 +116,7 @@ const RacePage = (props) => {
 
  
   const renderRaceList = () => {
-    if (!race) {
+    if (!race || !qual) {
       return <p>Loading...</p>
     }
 

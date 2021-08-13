@@ -1,14 +1,13 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table'
+// import { useHistory } from "react-router-dom";
 
 const RaceResultsList = (props) => {
-
+  // let history = useHistory();
   const { race } = props
-  console.log(race)
-
+ 
   const getDriverID = (result) => {
     let driver = result['Driver']
-    // console.log(driver)
     return driver
   }
 
@@ -20,6 +19,7 @@ const RaceResultsList = (props) => {
     }
   }
 
+
   if (!race.Results){
     return <h3>Check back after the race for results</h3>
   }
@@ -28,10 +28,17 @@ const RaceResultsList = (props) => {
 
     let currentDriver = getDriverID(result);
     let status = filterStatus(result)
-    // console.log(currentDriver.driverId)
-    // console.log(currentDriver)
+    
+    // const handleClick = () =>{
+    //   console.log(props)
+    //   let driverId = currentDriver.driverId
+    //   history.push(`/race/${race.round}/${driverId}`);
+    // }
+
+
     if (result.status !== "Finished"){
       return (
+        // removed onClick for now
         <tr key={index} className="text-white-50 bg-dark">
           <td>{result.position}</td>
           <td>{result.number} {currentDriver.code}</td>
@@ -41,7 +48,8 @@ const RaceResultsList = (props) => {
       )
     } else {
       return (
-        <tr key={index}>
+        // removed onClick for now
+        <tr key={index} >
           <td>{result.position}</td>
           <td>{result.number} {currentDriver.code}</td>
           <td>{status}</td>

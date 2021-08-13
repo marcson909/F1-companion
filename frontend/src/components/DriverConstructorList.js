@@ -1,70 +1,53 @@
 import React, { useContext, useState, useEffect } from 'react';
-// import ListGroup from 'react-bootstrap/ListGroup'
+
 import Container from 'react-bootstrap/Container'
-import NavComponent from '../components/NavComponent';
 import UserContext from '../contexts/UserContext';
 import ListGroup from 'react-bootstrap/ListGroup'
 import DriverListSummary from '../components/DriverListSummary';
 
 import FormulaAPI from '../apis/FormulaAPI'
 
-const DriversPage = () => {
+const DriverConstructorList = (props) => {
   const user = useContext(UserContext);
-  // const [drivers, setDrivers] = useState([]);
+  const driverTeam = props.teamId;
   const [driverStandings, setDriverStandings] = useState([]);
-
-  // useEffect(() => {
-  //   const getDrivers = async () => {
-  //     try {
-  //         let driverData = await FormulaAPI.getCurrentDrivers()
-  //         driverData = driverData['MRData']['DriverTable']['Drivers']
-  //         console.log(driverData, 'driverData')
-  //         setDrivers( driverData )
-  //       }
-  //     catch  {
-  
-  //     }
-  //   }
-  //   getDrivers();
-
-  // }, [])
 
   useEffect(() => {
     const getDriverStandings = async () => {
       try {
           let driverStandingData = await FormulaAPI.getDriverStandings();
           driverStandingData = driverStandingData['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings']
-          console.log(driverStandingData, 'driverData')
           setDriverStandings( driverStandingData )
         }
       catch  {
-  
       }
     }
     getDriverStandings();
-
   }, [])
 
 
 
 
-  const renderDriverPage = () => {
+  const renderTeamDrivers = () => {
 
     if (driverStandings === null){
       return <p>Loading...</p>
     }
 
     let driverElements = driverStandings.map((driverStanding, index) => {
+
       let maxPoints = driverStandings[0].points
+      if ( driverStanding.Constructors[0].constructorId !== driverTeam ){
+          return null
+        }
         return ( 
           <ListGroup key={`driverStanding-${index}`}>
-            <DriverListSummary driverStanding={driverStanding} maxPoints={maxPoints}/>
+            <DriverListSummary driverStanding={driverStanding} maxPoints={maxPoints} className="bg-dark text-white" />
           </ListGroup>
-        )
+          )
       })
       return (
         <div>
-          <NavComponent />
           { driverElements }
         </div>
       )
@@ -72,13 +55,11 @@ const DriversPage = () => {
 
   }
 
-
   return (
-    <Container>
-      
-      { renderDriverPage() }
+    <Container className="p-0 m-0">    
+      { renderTeamDrivers() }
     </Container>
   );
 };
 
-export default DriversPage;
+export default DriverConstructorList;

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import FormulaAPI from '../apis/FormulaAPI'
 import RaceListSummary from '../components/RaceListSummary';
 import NavComponent from '../components/NavComponent';
-
 import UserContext from '../contexts/UserContext';
 import ListGroup from 'react-bootstrap/ListGroup'
 
@@ -59,7 +58,6 @@ const HomePage = () => {
     
     return (
       <div>
-        {/* { renderNavBar() } */}
         <NavComponent />
         <h2>Welcome {user.username}!</h2>
         <h2>Current Race Calendar</h2>

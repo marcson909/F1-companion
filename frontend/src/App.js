@@ -6,17 +6,20 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import RacePage from './pages/RacePage';
-import DriverResultsPage from './pages/DriverResultsPage';
-import DriversListPage from './pages/DriversPage';
+// import DriverResultsPage from './pages/DriverResultsPage';
+// import DriversListPage from './pages/DriversPage';
+import DriversPage from './pages/DriversPage'
 import DriversDetailPage from './pages/DriversDetailPage';
 import TeamPage from './pages/TeamPage';
 import TeamDetailPage from './pages/TeamDetailPage';
 
 // context
 import UserContext from './contexts/UserContext'
+import ImageContext from './contexts/ImageContext';
 
 const App = () => {
   const [user, setUser] = useState(null);
+  let images = '/images'
 
    // helper
    const updateUser = (userData) => {
@@ -41,19 +44,19 @@ const App = () => {
   return (
     <div className="App">
       <Router>
+        <ImageContext.Provider value={images}>
         <UserContext.Provider value={user} >
-        <div>
           <Route path="/" exact render={renderHomePage} />
           <Route exact path="/race/:raceRound" component={RacePage} />
-          <Route exact path="race/:raceRound/results/:driverID" component={DriverResultsPage} />
-          <Route exact path="/drivers" component={DriversListPage} />
-          <Route exact path="/drivers/:driverID" component={DriversDetailPage} />
+          {/* <Route exact path="/race/:raceRound/:driverId" component={DriverResultsPage} /> */}
+          <Route exact path="/drivers" component={DriversPage} />
+          <Route exact path="/drivers/:driverId" component={DriversDetailPage} />
           <Route exact path="/teams" component={TeamPage} />
-          <Route exact path="/teams/:teamID" component={TeamDetailPage} />
+          <Route exact path="/teams/:teamId" component={TeamDetailPage} />
           <Route path="/login" exact render={renderLoginPage} />
           <Route path="/signup" exact render={renderSignupPage} />
-        </div>
         </UserContext.Provider>
+        </ImageContext.Provider>
       </Router>
     </div>
   );
