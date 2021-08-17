@@ -72,8 +72,9 @@ const renderTeamDetailPage = () => {
     return (
       <div>
         <NavComponent />
-        <Card className="bg-dark text-white">
-          <Card.Img src={`${imgLogo}`} alt={`${props.match.params.teamId} logo`} />
+        <Container className="d-flex flex-column align-items-center">
+        <Card className="bg-dark text-white w-50 h-50" >
+          <Card.Img src={`${imgLogo}`} alt={`${props.match.params.teamId} logo`}/>
             {/* <Card.ImgOverlay className="d-flex flex-column justify-content-end shadow-sm"> */}
             <Card.Body className="d-flex flex-row justify-content-start align-items-center h-auto py-1">
             <Figure className="mt-2">
@@ -93,8 +94,8 @@ const renderTeamDetailPage = () => {
             </Card.Text>
             </Card.Body>
         </Card >
-        <CardGroup >
-          <Card className="bg-dark text-white">
+        <CardGroup className="bg-dark text-white w-50 h-50">
+          <Card className="bg-dark text-white w-50 h-50">
             <Card.Body>
               <Card.Text className="fs-6 lh-1">
                 CHAMPIONSHIP
@@ -134,7 +135,7 @@ const renderTeamDetailPage = () => {
           </Card.Body>
           </Card>
         </CardGroup>
-        <CardColumns>
+        <CardColumns className="bg-dark text-white w-50 h-50">
         <Card className="bg-dark text-white">
         <Card.Header>Current Drivers</Card.Header>
         <Card.Body className="pt-0">
@@ -146,7 +147,7 @@ const renderTeamDetailPage = () => {
         </Card.Body>
         </Card>
         </CardColumns>
-        
+        </Container>
         
       </div>
     )

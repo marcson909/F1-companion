@@ -7,7 +7,7 @@ import Card from 'react-bootstrap/Card'
 import CardGroup from 'react-bootstrap/CardGroup'
 import CardColumns from 'react-bootstrap/CardColumns'
 import Figure from 'react-bootstrap/Figure'
-import DriverConstructorList from '../components/DriverConstructorList';
+import DriverTeamList from '../components/DriverTeamList';
 
 
 // import FigureImage from 'react-bootstrap/Figure'
@@ -26,65 +26,49 @@ const DriversDetailPage = (props) => {
 
   const location = useLocation();
   const { driverStanding } = location.state
-  const [team, setTeam] = useState(null)
- 
-
-  useEffect(() => {
-    const getTeamInfo = async () => {
-      console.log("hey we're at get team info")
-      try {
-        let teamId = props.match.params.teamId
-  
-        let teamData = await FormulaAPI.getTeamById(teamId)
-        teamData = teamData['MRData']['ConstructorTable']['Constructors'][0]
-  
-        if (teamData) {
-          setTeam( teamData )
-        }
-      }
-      catch (error) {
-        console.log(error)
-      }
-    }
-    getTeamInfo();
-}, [])
+  console.log(driverStanding, 'location state')
 
 
-const renderTeamDetailPage = () => {
+const renderDriverDetailPage = () => {
 
-  if (team === null){
+  if (driverStanding === null){
     return <p>Loading...</p>
   }
 
-  let imgLogo = `${images}/${props.match.params.teamId}.jpg`;
-  let imgFlag = `${images}/${team.nationality}.png`;
+  console.log(driverStanding, 'driver standing on drivers detail page')
+  let driver = driverStanding.Driver
+  let driverTeam = driverStanding.Constructors[0]
+  console.log(driverTeam, 'driverTeam console')
+  let imgLogo = `${images}/${props.match.params.driverId}.jpeg`;
+  let imgFlag = `${images}/${driver.nationality}.png`;
 
 
     return (
       <div>
         <NavComponent />
-        <Card className="bg-dark text-white">
-          <Card.Img src={`${imgLogo}`} alt={`${props.match.params.teamId} logo`} />
+        <Container className="d-flex flex-column align-items-center">
+        <Card className="bg-dark text-white h-50 w-50">
+          <Card.Img className=""src={`${imgLogo}`} alt={`${props.match.params.driverId} logo`} />
             <Card.Body className="d-flex flex-row justify-content-start align-items-center h-auto py-1">
             <Figure className="mt-2">
               <Figure.Image
                 width={64}
                 height={64}
                 src={`${imgFlag}`} 
-                alt={`${team.nationality} icon`}
+                alt={`${driver.nationality} icon`}
                 className="mb-0"
               />
             </Figure>
             <Card.Text className="fs-4 lh-3">
-              {`${team.name}`}
+              {`${driver.givenName}`} {`${driver.familyName}`}
               <Card.Text className="fs-6 lh-2">
-                {`${team.nationality}`}
+                {`${driver.nationality}`}
               </Card.Text>
             </Card.Text>
             </Card.Body>
         </Card >
-        <CardGroup >
-          <Card className="bg-dark text-white">
+        <CardGroup  className="bg-dark text-white h-50 w-50">
+          <Card className="bg-dark text-white h-50 w-50">
             <Card.Body>
               <Card.Text className="fs-6 lh-1">
                 CHAMPIONSHIP
@@ -97,7 +81,7 @@ const renderTeamDetailPage = () => {
               </Card.Text>
             </Card.Body>
           </Card>
-          <Card className="bg-dark text-white">
+          <Card className="bg-dark text-white h-50 w-50">
           <Card.Body>
           <Card.Text className="fs-6 lh-1">
                 CURRENTLY
@@ -110,7 +94,7 @@ const renderTeamDetailPage = () => {
               </Card.Text>
             </Card.Body>
           </Card>
-          <Card className="bg-dark text-white">
+          <Card className="bg-dark text-white h-50 w-50">
           <Card.Body>
             <Card.Text className="fs-6 lh-1">
               THIS SEASON
@@ -124,19 +108,22 @@ const renderTeamDetailPage = () => {
           </Card.Body>
           </Card>
         </CardGroup>
-        <CardColumns>
-        <Card className="bg-dark text-white">
-        <Card.Header>Current Drivers</Card.Header>
-        <Card.Body className="pt-0">
-          <Card>
-            <Card.Text>
-              <DriverConstructorList teamId={props.match.params.teamId} className="bg-dark text-white"/>
-            </Card.Text>
-          </Card>
-        </Card.Body>
-        </Card>
-        </CardColumns>
-        
+        {/* <CardColumns> */}
+          <Card className="bg-dark text-white h-50 w-50">
+            <Card.Header>Current Team</Card.Header>
+            <Card.Body className="pt-0">
+              <Card className="bg-dark text-white" fluid>
+                <Card.Text>
+                  <DriverTeamList 
+                  teamId={driverTeam.constructorId}
+                  standings={driverStanding}
+                  className="bg-dark text-white"/>
+                </Card.Text>
+              </Card>
+            </Card.Body>
+            </Card>
+          {/* </CardColumns> */}
+        </Container>
         
       </div>
     )
@@ -145,7 +132,7 @@ const renderTeamDetailPage = () => {
 
   return (
     <Container>
-      { renderTeamDetailPage() }
+      { renderDriverDetailPage() }
     </Container>
   );
 };

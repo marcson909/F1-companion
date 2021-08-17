@@ -15,7 +15,7 @@ class DriverSerializer(ModelSerializer):
 
     class Meta:
         model = Driver
-        fields = ['id', 'driver_ref', 'number', 'code', 'first_name', 'last_name', 'dob', 'nationality', 'url', 'driver_teams']
+        fields = '__all__'
 
 class TeamSerializer(ModelSerializer):
     drivers = serializers.StringRelatedField(many=True, read_only=True)
@@ -23,3 +23,9 @@ class TeamSerializer(ModelSerializer):
     class Meta:
         model = Team
         fields = '__all__'
+
+class UserLeagueSerializer(ModelSerializer):
+    
+    class Meta:
+        model = UserLeague
+        fields = "__all__"

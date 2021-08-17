@@ -6,6 +6,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 
 const DriverListSummary = (props) => {
 
+
   let points = props.driverStanding.points
   const now = points;
   

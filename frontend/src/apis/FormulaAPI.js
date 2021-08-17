@@ -1,13 +1,13 @@
 const BASE_URL = 'http://localhost:8000/'
 
-// const getTokenInit = (token) => {
-//     return {
-//         headers: {
-//           'Content-Type': 'application/json',
-//           "authorization": `JWT ${token}`
-//         }
-//     }
-//   }
+const getTokenInit = (token) => {
+    return {
+        headers: {
+          'Content-Type': 'application/json',
+          "authorization": `JWT ${token}`
+        }
+    }
+  }
   
   const tryCatchFetch = async (url, init) => {
     try {
@@ -101,6 +101,12 @@ const BASE_URL = 'http://localhost:8000/'
     return await tryCatchFetchUrlOnly(url)
   }
 
+  const getRecentResults = async () => {
+    let url = `http://ergast.com/api/f1/current/last/results.json`
+  
+    return await tryCatchFetchUrlOnly(url)
+  }
+
   const getDriverStandings = async () => {
     console.log('getting driver standings')
     let url = `http://ergast.com/api/f1/current/driverStandings.json`
@@ -127,6 +133,81 @@ const BASE_URL = 'http://localhost:8000/'
     return await tryCatchFetchUrlOnly(url)
   }
 
+  const getDriverById = async (driverId) => {
+    let url = `http://ergast.com/api/f1/drivers/${driverId}.json`
+     
+    return await tryCatchFetchUrlOnly(url)
+  }
+
+  const getLeagues = async (token) => {
+    console.log('trying get leagues')
+    let url = `${BASE_URL}leagues/`
+    return await tryCatchFetch(url, getTokenInit(token))
+  }
+
+  const getLeagueById = async (leagueID, token) => {
+    let url = `${BASE_URL}leagues/${leagueID}/`
+    return await tryCatchFetch(url, getTokenInit(token))
+  }
+
+  const getUserLeagues = async (token) => {
+    console.log('trying get user leagues')
+    let url = `${BASE_URL}userleagues/`
+    return await tryCatchFetch(url, getTokenInit(token))
+  }
+
+  const getFantasyTeams = async(token) => {
+    let url = `${BASE_URL}teams/`
+    return await tryCatchFetch(url, getTokenInit(token))
+  }
+
+  const createFantasyLeague = async(newFantasyLeagueParams, token) => {
+    let url = `${BASE_URL}leagues/`
+    let init = getTokenInit(token)
+    init["method"] = "POST"
+    init["body"] = JSON.stringify(newFantasyLeagueParams)
+    return await tryCatchFetch(url, init)
+  }
+
+  const deleteFantasyLeague = async(fantasyLeagueID, token) => {
+    let url = `${BASE_URL}leagues/${fantasyLeagueID}/`
+    let init = getTokenInit(token)
+    init["method"] = "DELETE"
+    return await tryCatchFetch(url,init)
+  }
+
+  const createFantasyUserLeague = async(newFantasyUserLeagueParams, token) => {
+    let url = `${BASE_URL}userleagues/`
+    let init = getTokenInit(token)
+    init["method"] = "POST"
+    init["body"] = JSON.stringify(newFantasyUserLeagueParams)
+    return await tryCatchFetch(url, init)
+  }
+
+
+  const createFantasyTeam = async(newFantasyTeamParams, token) => {
+    let url = `${BASE_URL}teams/`
+    let init = getTokenInit(token)
+    init["method"] = "POST"
+    init["body"] = JSON.stringify(newFantasyTeamParams)
+    return await tryCatchFetch(url, init)
+  }
+
+  const updateFantasyTeam = async(fantasyTeamID, updatedFantasyTeamParams, token) => {
+    let url = `${BASE_URL}teams/${fantasyTeamID}/`
+    let init = getTokenInit(token)
+    init["method"] = "PUT"
+    init["body"] = JSON.stringify(updatedFantasyTeamParams)
+    return await tryCatchFetch(url, init)
+  }
+
+  const deleteFantasyTeam = async (fantasyTeamID, token) => {
+    let url = `${BASE_URL}teams/${fantasyTeamID}/`
+    let init = getTokenInit(token)
+    init["method"] = "DELETE"
+    return await tryCatchFetch(url, init)
+  }
+
  
 
   const myExport = {
@@ -136,10 +217,23 @@ const BASE_URL = 'http://localhost:8000/'
     getRaceByRound,
     getQualiByRound,
     getCurrentDrivers,
+    getRecentResults,
     getDriverStandings,
     getTeamStandings,
     getTeamStandingsById,
     getTeamById,
+    getDriverById,
+    getLeagues,
+    getLeagueById,
+    getUserLeagues,
+    getFantasyTeams,
+    createFantasyLeague,
+    createFantasyUserLeague,
+    deleteFantasyLeague,
+    createFantasyTeam,
+    updateFantasyTeam,
+    deleteFantasyTeam,
+
 
   }
   

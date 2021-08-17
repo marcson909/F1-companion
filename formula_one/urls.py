@@ -8,10 +8,11 @@ from formula_one import views
 router = SimpleRouter()
 router.register('leagues', views.LeagueViewSet, basename='league')
 router.register("teams", views.TeamViewSet, basename="team")
+router.register('userleagues', views.UserLeagueViewSet, basename='userleague')
 
 urlpatterns = [
-    path('current_season/', views.current_season),
-    path('drivers/', views.drivers),
-    path('constructors/', views.constructors),
+    # path('current_season/', views.current_season),
+    # path('drivers/', views.drivers),
+    # path('constructors/', views.constructors),
     path('', include(router.urls)),
 ]

@@ -12,14 +12,19 @@ import DriversPage from './pages/DriversPage'
 import DriversDetailPage from './pages/DriversDetailPage';
 import TeamPage from './pages/TeamPage';
 import TeamDetailPage from './pages/TeamDetailPage';
+import FantasyMainPage from './pages/FantasyMainPage';
+import LeaguePage from './pages/LeaguePage';
+import FantasyTeamPage from './pages/FantasyTeamPage';
 
 // context
 import UserContext from './contexts/UserContext'
 import ImageContext from './contexts/ImageContext';
+import FantasyTeamDriverListView from './components/FantasyTeamDriverListView';
 
 const App = () => {
   const [user, setUser] = useState(null);
   let images = '/images'
+
 
    // helper
    const updateUser = (userData) => {
@@ -55,6 +60,10 @@ const App = () => {
           <Route exact path="/teams/:teamId" component={TeamDetailPage} />
           <Route path="/login" exact render={renderLoginPage} />
           <Route path="/signup" exact render={renderSignupPage} />
+          <Route exact path="/leagues" component={FantasyMainPage} />
+          <Route exact path="/leagues/:leagueID" component={LeaguePage} />
+          <Route exact path="/fantasy-teams/:ownerID" component={FantasyTeamPage} />
+          <Route exact path="/fantasy=teams/:ownerID/driver-list" component={FantasyTeamDriverListView} />
         </UserContext.Provider>
         </ImageContext.Provider>
       </Router>

@@ -1,15 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib import admin
 
-class League(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    administrator = models.ForeignKey(User,on_delete=models.CASCADE, related_name="leagues")
-    date_created = models.DateField(auto_now_add=True)
-    is_public = models.BooleanField(default=True)
-    duration = models.IntegerField()
-
-    def __str__(self):
-        return self.name
 
 class Driver(models.Model):
     driver_ref = models.CharField(max_length=255)
@@ -21,14 +13,45 @@ class Driver(models.Model):
     nationality = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
 
-class Team(models.Model):
-    name = models.CharField(max_length=30, unique=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner_teams")
+class League(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    administrator = models.ForeignKey(User,on_delete=models.CASCADE, related_name="league")
+    members = models.ManyToManyField(User, through='UserLeague', related_name='all_members')
     date_created = models.DateField(auto_now_add=True)
-    drivers = models.ForeignKey(Driver, on_delete=models.CASCADE, related_name="driver_teams")
+    is_public = models.BooleanField(default=True)
+    duration = models.IntegerField()
+    
 
     def __str__(self):
         return self.name
+
+class Team(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner_teams")
+    league = models.ForeignKey(League, on_delete=models.CASCADE, related_name='teams')
+    date_created = models.DateField(auto_now_add=True)
+    drivers = models.ManyToManyField(Driver, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class UserLeague(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="leagues")
+  league = models.ForeignKey(League, on_delete=models.CASCADE, related_name="users")
+
+  def __str__(self):
+        return self.league.name
+
+class UserLeagueInline(admin.TabularInline):
+    model = UserLeague
+    extra = 1
+
+class UserAdmin(admin.ModelAdmin):
+    inlines = (UserLeagueInline,)
+
+class LeagueAdmin(admin.ModelAdmin):
+    inlines = (UserLeagueInline,)
+
 
 # class Round(models.Model):
 #     num = models.IntegerField()

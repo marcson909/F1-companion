@@ -11,6 +11,7 @@ const DriverConstructorList = (props) => {
   const user = useContext(UserContext);
   const driverTeam = props.teamId;
   const [driverStandings, setDriverStandings] = useState([]);
+  console.log('team detail page')
 
   useEffect(() => {
     const getDriverStandings = async () => {

@@ -1,9 +1,7 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table'
-// import { useHistory } from "react-router-dom";
 
 const RaceResultsList = (props) => {
-  // let history = useHistory();
   const { race } = props
  
   const getDriverID = (result) => {

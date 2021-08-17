@@ -9,11 +9,6 @@ const TeamListSummary = (props) => {
   let points = props.teamStanding.points
   const now = points;
   
-
-
-
-
-
   console.log(props.teamStanding ,'team list summary props')
   return (
 

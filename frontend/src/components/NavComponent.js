@@ -19,7 +19,9 @@ const NavComponent = () => {
               </Link></Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link disabled eventKey="fantasy" ><Link className="nav-link border-0">
+              <Nav.Link  eventKey="fantasy" ><Link 
+              to ="/leagues"
+              className="nav-link border-0">
                 Fantasy
               </Link></Nav.Link>
             </Nav.Item>
