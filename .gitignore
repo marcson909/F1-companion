@@ -1,4 +1,5 @@
 venv
 __pycache__
+hidden.js
 saved_code.py
 f1db_tables.sql

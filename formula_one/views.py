@@ -53,7 +53,19 @@ class TeamViewSet(viewsets.ModelViewSet):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
 
+class DriverViewSet(viewsets.ModelViewSet):
+    queryset = Driver.objects.all()
+    serializer_class = DriverSerializer
+
+class ConstructorViewSet(viewsets.ModelViewSet):
+    queryset = Constructor.objects.all()
+    serializer_class = ConstructorSerializer
+
 class UserLeagueViewSet(viewsets.ModelViewSet):
     queryset = UserLeague.objects.all()
     serializer_class = UserLeagueSerializer
+
+class TeamDriverViewSet(viewsets.ModelViewSet):
+    queryset = TeamDriver.objects.all()
+    serializer_class = TeamDriverSerializer
 

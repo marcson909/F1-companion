@@ -3,16 +3,6 @@ from django.contrib.auth.models import User
 from django.contrib import admin
 
 
-class Driver(models.Model):
-    driver_ref = models.CharField(max_length=255)
-    number = models.IntegerField()
-    code = models.CharField(max_length=3)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    dob = models.DateField()
-    nationality = models.CharField(max_length=255)
-    url = models.CharField(max_length=255)
-
 class League(models.Model):
     name = models.CharField(max_length=50, unique=True)
     administrator = models.ForeignKey(User,on_delete=models.CASCADE, related_name="league")
@@ -28,12 +18,23 @@ class League(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=30, unique=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner_teams")
-    league = models.ForeignKey(League, on_delete=models.CASCADE, related_name='teams')
+    league = models.ForeignKey(League, on_delete=models.CASCADE, related_name='league_teams')
     date_created = models.DateField(auto_now_add=True)
-    drivers = models.ManyToManyField(Driver, blank=True)
+    # drivers = models.ManyToManyField(Driver, blank=True, through='TeamDriver', related_name="all_drivers")
 
     def __str__(self):
         return self.name
+
+class Driver(models.Model):
+    driver_ref = models.CharField(max_length=255)
+    number = models.CharField(max_length=255)
+    code = models.CharField(max_length=3)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    dob = models.CharField(max_length=255)
+    nationality = models.CharField(max_length=255)
+    url = models.CharField(max_length=255)
+    team = models.ManyToManyField(Team, blank=True, through='TeamDriver',related_name="drivers")
 
 class UserLeague(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="leagues")
@@ -42,12 +43,29 @@ class UserLeague(models.Model):
   def __str__(self):
         return self.league.name
 
+class TeamDriver(models.Model):
+  driver = models.ForeignKey(Driver, on_delete=models.CASCADE, related_name="teams")
+  team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="all_drivers")
+
+  def __str__(self):
+        return self.team.name
+
 class UserLeagueInline(admin.TabularInline):
     model = UserLeague
     extra = 1
 
+class TeamDriverInline(admin.TabularInline):
+    model = TeamDriver
+    extra = 1
+
 class UserAdmin(admin.ModelAdmin):
     inlines = (UserLeagueInline,)
+
+class TeamAdmin(admin.ModelAdmin):
+    inlines = (TeamDriverInline,)
+
+class DriverAdmin(admin.ModelAdmin):
+    inlines = (TeamDriverInline,)
 
 class LeagueAdmin(admin.ModelAdmin):
     inlines = (UserLeagueInline,)
