@@ -4,7 +4,7 @@ import UserContext from '../contexts/UserContext';
 
 import NavComponent from '../components/NavComponent';
 import ListGroup from 'react-bootstrap/ListGroup'
-import { useHistory } from "react-router-dom"
+import { useHistory, useLocation } from "react-router-dom"
 
 import FormulaAPI from '../apis/FormulaAPI'
 import FantasyTeamListSummary from "../components/FantasyTeamListSummary";
@@ -20,15 +20,18 @@ const LeaguePage = (props) => {
   console.log(props, "page props")
   let history = useHistory()
 
-  console.log(user.user.username, "league detail user user")
+  const location = useLocation();
+  const { backendDrivers, backendConstructors } = location.state
+
+  // console.log(user.user.username, "league detail user user")
 
   const getLeague = async () => {
-    console.log('at league detail page')
+    // console.log('at league detail page')
     try {
       let leagueID = props.match.params.leagueID
 
       let leagueData = await FormulaAPI.getLeagueById(leagueID, user.token)
-      console.log(leagueData, 'leagueData')
+      // console.log(leagueData, 'leagueData')
       if (leagueData) {
         setLeague( leagueData)
       }
@@ -41,7 +44,7 @@ const LeaguePage = (props) => {
   const getAllLeagues = async () => {
     try {
       let allLeagueData = await FormulaAPI.getLeagues(user.token)
-      console.log(allLeagueData, 'leagueData')
+      // console.log(allLeagueData, 'leagueData')
       if (allLeagueData) {
         setLeagues( allLeagueData)
       }
@@ -54,7 +57,7 @@ const LeaguePage = (props) => {
   const getUserLeagues = async () => {
     try {
       let userLeagueData = await FormulaAPI.getUserLeagues(user.token)
-      console.log(userLeagueData, "userLeagueData")
+      // console.log(userLeagueData, "userLeagueData")
       if (userLeagueData) {
         setUserLeagues( userLeagueData)
       }
@@ -68,7 +71,6 @@ const LeaguePage = (props) => {
     console.log("attempting get fantasy teams")
     try {
       let teamData = await FormulaAPI.getFantasyTeams(user.token)
-      console.log(teamData, 'teamdata')
       if (teamData) {
         setTeams ( teamData )
       }
@@ -88,14 +90,13 @@ const LeaguePage = (props) => {
         league: leagueID
       }
       let data = await FormulaAPI.createFantasyUserLeague(newUserLeagueParams, token)
-      console.log("new user league", data)
+      // console.log("new user league", data)
       if (data) {
         let newUserLeagues = [...userleagues, data]
         setUserLeagues(newUserLeagues)
       }
       alert("You joined the league!")
     }
-
   }
 
   const handleCreateTeam = async () => {
@@ -113,7 +114,7 @@ const LeaguePage = (props) => {
         drivers: drivers
       }
       let data = await FormulaAPI.createFantasyTeam(newFantasyTeamParams, token)
-      console.log("new fantasy team", data)
+      // console.log("new fantasy team", data)
       if (data) {
         let newFantasyTeams = [...teams, data]
         setTeams(newFantasyTeams)
@@ -213,7 +214,7 @@ const LeaguePage = (props) => {
         if (team.league === parseInt(props.match.params.leagueID)) {
           return (
             <ListGroup key={`fantasyteam-${index}`}>
-              <FantasyTeamListSummary team={team} league={league} />
+              <FantasyTeamListSummary team={team} league={league} backendDrivers={backendDrivers} backendConstructors={backendConstructors}/>
             </ListGroup>
           )
         }

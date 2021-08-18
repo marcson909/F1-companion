@@ -23,39 +23,27 @@ import FantasyTeamDriverListView from '../components/FantasyTeamDriverListView';
 const FantasyTeamPage = (props) => {
   console.log(props)
 
-  const MODE_TYPE = {
-    VIEW: 1,
-    UPDATE: 2,
-  }
-
   const location = useLocation();
-  const { team, league } = location.state;
+  const { team, league, backendDrivers, backendConstructors } = location.state;
 
   const user = useContext(UserContext)
   const images = useContext(ImageContext)
 
+  const [recentResults, setRecentResults] = useState([])
+  const [driverStandings, setDriverStandings] = useState([])
 
-  const [mode, setMode] = useState(MODE_TYPE.VIEW)
-  const [recentResults, setRecentResults] = useState(null)
-  const [driverStandings, setDriverStandings] = useState(null)
+  console.log(team,league, backendDrivers, backendConstructors)
 
-  const [key, setKey] = useState("team");
-
-  console.log(team,league)
-  console.log(typeof team.drivers, "drivers type check")
 
   let imgLogo = `${images}/${props.match.params.driverId}.jpeg`;
 
-  const changeMode = (newMode) => {
-    setMode(newMode)
-  }
 
   useEffect(() => {
     const getRecentResults = async () => {
       try {
           let recentResultData = await FormulaAPI.getRecentResults();
           recentResultData = recentResultData['MRData']['RaceTable']['Races'][0]['Results']
-          console.log(recentResultData, 'recent standing data')
+          // console.log(recentResultData, 'recent standing data')
           setRecentResults( recentResultData )
         }
       catch  {
@@ -71,7 +59,7 @@ const FantasyTeamPage = (props) => {
       try {
           let driverStandingData = await FormulaAPI.getDriverStandings();
           driverStandingData = driverStandingData['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings']
-          console.log(driverStandingData, 'driverData')
+          // console.log(driverStandingData, 'driverData')
           setDriverStandings( driverStandingData )
         }
       catch  {
@@ -82,65 +70,16 @@ const FantasyTeamPage = (props) => {
 
   }, [])
 
-  // const updateFantasyTeam = async () => {
-
-  // }
-
-
-//   const handleRemoveDriver = (driver) => {
-//     console.log(driver, "fantasy team driver being clicked")
-//     console.log(team.drivers, "fantasy team drivers")
-
-//    team.drivers.splice(team.drivers.indexOf(driver), 1);
-
-//   console.log(team)
-//  }
-
   const renderFantasyTeamPage = () => {
     if (!team){
       return <p>Loading...</p>
     }
-    console.log(user.user.id, team.owner, "user id and team owner check")
+
+    console.log(driverStandings, "DRIVER STANDINGS STATE CHECK")
     // IF LOGGED IN USER IS TEAM OWNER
     if (user.user.id === team.owner){
-
-      // IF MODE IS UPDATE
-      if (mode === MODE_TYPE.UPDATE) {
-        // IF NO DRIVERS IN TEAM
-        if (!team.drivers.length){
-          
-        }
-        return (
-          <Container>
-            <Container>
-              <h1 className="nonbreak">Team Name: </h1>
-              <input id="team-name" placeholder="team name" defaultValue={team.name}/>
-            </Container>
-                <Tabs 
-                id="tabs"
-                defaultactiveKey="team"
-                className="mb-3 nav-fill">
-                  <Tab 
-                  eventKey="team" 
-                  title="Team" >
-                    <CardGroup>
-                    
-  
-                    </CardGroup>
-                  </Tab>
-                  <Tab eventKey="allDrivers" title="Driver List">
-                    <FantasyTeamDriverListView recentResults={recentResults}
-                    fantasyTeam={team}
-                    league={league} />
-                    <Button onClick={() => changeMode(MODE_TYPE.UPDATE)}>Update</Button>
-                  </Tab>
-                </Tabs>
-          </Container>
-        )} 
-        // IF USER IS OWNER BUT MODE IS NOT UPDATE
-        else {
-          // IF DRIVERS ARRAY IS NOT FALSEY
-        if (team.drivers.length){
+          // IF DRIVERS ARRAY IS POPULATED
+        if (team.drivers){
           const teamDrivers = team.drivers.map((driver, index) => {
             return (
               <Card key={index}>
@@ -154,9 +93,6 @@ const FantasyTeamPage = (props) => {
           })
           return (
             <Container>
-                <Container>
-                  <h1 > {team.name}</h1>
-                </Container>
                     <Tabs 
                     id="tabs" 
                     defaultactiveKey="team" // 
@@ -166,26 +102,23 @@ const FantasyTeamPage = (props) => {
                       title="Team" >
                         <CardGroup>
                             { teamDrivers }
-                            <Button onClick={() => changeMode(MODE_TYPE.UPDATE)}>Update</Button>
                         </CardGroup>
                       </Tab>
                       <Tab eventKey="allDrivers" title="Driver List">
-                        <FantasyTeamDriverListView recentResults={recentResults}
+                        <FantasyTeamDriverListView 
+                        recentResults={recentResults}
+                        driverStandings={driverStandings}
                         fantasyTeam={team}
-                        league={league} />
-                        <Button onClick={() => changeMode(MODE_TYPE.UPDATE)}>Update</Button>
+                        league={league} backendDrivers={backendDrivers} backendConstructors={backendConstructors}/>
                       </Tab>
                     </Tabs>
               </Container>
           )
         }
-        // NO LENGTH IN DRIVERS ARRAY
+        // USER IS OWNER BUT NOT DRIVERS
         else {
           return (
             <Container>
-                <Container>
-                  <h1 > {team.name}</h1>
-                </Container>
                     <Tabs 
                     id="tabs" 
                     defaultactiveKey="team" // 
@@ -196,26 +129,26 @@ const FantasyTeamPage = (props) => {
                         <CardGroup>
                           <Card >
                               <Card.Body>
-                                <Link>Create Team</Link>
+                                <Card.Text>
+                                  No Drivers Found, Update your Team from the Driver List Tab
+                                </Card.Text>
                               </Card.Body>
-                              <Button onClick={() => changeMode(MODE_TYPE.UPDATE)}>Update</Button>
                             </Card>
                         </CardGroup>
                       </Tab>
                       <Tab eventKey="allDrivers" title="Driver List">
                         <FantasyTeamDriverListView recentResults={recentResults}
+                        driverStandings={driverStandings}
                         fantasyTeam={team}
-                        league={league} />
-                        <Button onClick={() => changeMode(MODE_TYPE.UPDATE)}>Update</Button>
+                        league={league} backendDrivers={backendDrivers} backendConstructors={backendConstructors}/>
                       </Tab>
                     </Tabs>
               </Container>
           )
         }
       }
-    }
     else {
-      if (!team.drivers.length) {
+      if (!team.drivers) {
         return (
           <Container>
             <h1>This team's owner hasn't set up their team yet</h1>
@@ -244,13 +177,9 @@ const FantasyTeamPage = (props) => {
     }
     }
 
-   
-
-
   return (
     <Container>
       <NavComponent />
-      <h1>Fantasy Team detail page</h1>
       { renderFantasyTeamPage() }
     </Container>
   );

@@ -10,12 +10,24 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import LeagueListSummary from '../components/LeagueListSummary';
 import FormulaAPI from '../apis/FormulaAPI'
 
-const FantasyMainPage = () => {
+const FantasyMainPage = (props) => {
   const user = useContext(UserContext);
   console.log(user)
+  console.log(props)
 
   const [leagues, setLeagues] = useState(null)
   const [userleagues, setUserLeagues] = useState(null)
+  const [currentFantasyDrivers, setCurrentFantasyDrivers] = useState([])
+  const [currentFantasyConstructors, setCurrentFantasyConstructors] = useState([])
+
+
+  const objectsEqual = (o1, o2) =>
+    Object.keys(o1).length === Object.keys(o2).length 
+        && Object.keys(o1).every(p => o1[p] === o2[p]);
+
+  const arraysEqual = (a1, a2) => 
+  a1.length === a2.length && a1.every((o, idx) => objectsEqual(o, a2[idx]));
+
 
   const getLeaguesList = async () => {
     try {
@@ -30,6 +42,41 @@ const FantasyMainPage = () => {
       }
     }
     catch  {
+    }
+  }
+
+  const handleBackendDrivers = async () =>{
+    try{
+      let token = user.token
+      if (token) {
+        let backendDriverData = await FormulaAPI.getDriversBackend(token)
+        if (backendDriverData.length > 0) {
+          console.log(backendDriverData, "NOT NULL BACKEND DRIVER DATA")
+          setCurrentFantasyDrivers(backendDriverData)
+        } else {
+          updateCurrentBackendDrivers();
+        }
+      }
+    }
+    catch {
+    }
+  }
+
+  const handleBackendConstructors = async () =>{
+    try{
+      let token = user.token
+      if (token) {
+        let backendConstructorData = await FormulaAPI.getConstructorsBackend(token)
+
+        console.log(backendConstructorData, "BACKEND CONSTRUCTOR DATA")
+        if (backendConstructorData.length > 0){
+          setCurrentFantasyConstructors(backendConstructorData)
+        } else {
+          updateCurrentBackendConstructors();
+        }
+      }
+    }
+    catch {
 
     }
   }
@@ -42,6 +89,74 @@ const FantasyMainPage = () => {
         setUserLeagues( userLeagueData)
       }
     }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  const updateCurrentBackendDrivers = async () => {
+    try {
+      if (currentFantasyDrivers.length < 1 ){
+        console.log(currentFantasyDrivers, "THERE SHOULD BE NO CURRENT BACKEND DRIVERS IF THIS FIRES")
+        for (let driver of props.currentDrivers){
+          console.log(driver, "DRIVER OF PROPS CURRENT DRIVERS")
+          let data = await FormulaAPI.createCurrentDrivers(driver, user.token)
+            if (data) {
+              console.log(data)
+            }
+        }
+
+      } else {
+        for (let driver of currentFantasyDrivers){
+          let data = await FormulaAPI.deleteCurrentDrivers(driver.id, user.token)
+          if (data) {
+            console.log(data)
+          }
+          }
+          for (let driver of props.currentDrivers){
+            console.log(driver, "DRIVER OF PROPS CURRENT DRIVERS")
+            let data = await FormulaAPI.createCurrentDrivers(driver, user.token)
+              if (data) {
+                console.log(data)
+              }
+          }     
+        }
+        setCurrentFantasyDrivers(props.currentDrivers)
+      }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  const updateCurrentBackendConstructors = async () => {
+    try {
+      if (currentFantasyConstructors.length < 1 ){
+        console.log(currentFantasyConstructors, "THERE SHOULD BE NO CURRENT BACKEND CONSTRUCTORS IF THIS FIRES")
+        for (let constructor of props.currentConstructors){
+          console.log(constructor, "CONSTRUCTOR OF PROPS CURRENT CONSTRUCTORS")
+          let data = await FormulaAPI.createCurrentConstructors(constructor, user.token)
+            if (data) {
+              console.log(data)
+            }
+        }
+
+      } else {
+        for (let constructor of currentFantasyConstructors){
+          let data = await FormulaAPI.deleteCurrentConstructors(constructor.id, user.token)
+          if (data) {
+            console.log(data)
+          }
+          }
+          for (let constructor of props.currentConstructors){
+            console.log(constructor, "CONSTRUCTOR OF PROPS CURRENT CONSTRUCTORS")
+            let data = await FormulaAPI.createCurrentConstructors(constructor, user.token)
+              if (data) {
+                console.log(data)
+              }
+          }     
+        }
+        setCurrentFantasyConstructors(props.currentConstructors)
+      }
     catch (error) {
       console.log(error)
     }
@@ -93,6 +208,15 @@ const FantasyMainPage = () => {
 }, [])
 
 useEffect(() => {
+  handleBackendDrivers();
+}, [])
+
+useEffect(() => {
+  handleBackendConstructors();
+}, [])
+
+
+useEffect(() => {
   if (userleagues == null) {
     getUserLeagues()
   }
@@ -116,10 +240,9 @@ const renderFantasyPage = () => {
   let leagueElements = leagues.map((league, index) => {
       return (
           <ListGroup key={`league-${index}`}>
-            <LeagueListSummary league={league} />
+            <LeagueListSummary league={league} backendDrivers={currentFantasyDrivers} backendConstructors={currentFantasyConstructors}/>
           </ListGroup>
 
-        
       )
     })
 

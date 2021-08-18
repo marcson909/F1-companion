@@ -101,6 +101,12 @@ const getTokenInit = (token) => {
     return await tryCatchFetchUrlOnly(url)
   }
 
+  const getCurrentConstructors = async () => {
+    let url = `http://ergast.com/api/f1/2021/constructors.json`
+  
+    return await tryCatchFetchUrlOnly(url)
+  }
+
   const getRecentResults = async () => {
     let url = `http://ergast.com/api/f1/current/last/results.json`
   
@@ -145,6 +151,27 @@ const getTokenInit = (token) => {
     return await tryCatchFetch(url, getTokenInit(token))
   }
 
+  const getDriversBackend = async (token) => {
+    console.log('trying get backend drivers')
+    let url = `${BASE_URL}drivers/`
+    return await tryCatchFetch(url, getTokenInit(token))
+  }
+
+  const updateDriversBackend = async (driverID,updatedDriverParams, token) => {
+    console.log('trying get backend drivers')
+    let url = `${BASE_URL}drivers/${driverID}/`
+    let init = getTokenInit(token)
+    init["method"] = "PUT"
+    init["body"] = JSON.stringify(updatedDriverParams)
+      return await tryCatchFetch(url, init)
+  }
+
+  const getConstructorsBackend = async (token) => {
+    console.log('trying get backend constructors')
+    let url = `${BASE_URL}constructors/`
+    return await tryCatchFetch(url, getTokenInit(token))
+  }
+
   const getLeagueById = async (leagueID, token) => {
     let url = `${BASE_URL}leagues/${leagueID}/`
     return await tryCatchFetch(url, getTokenInit(token))
@@ -153,6 +180,12 @@ const getTokenInit = (token) => {
   const getUserLeagues = async (token) => {
     console.log('trying get user leagues')
     let url = `${BASE_URL}userleagues/`
+    return await tryCatchFetch(url, getTokenInit(token))
+  }
+
+  const getBackendTeamDrivers = async (token) => {
+    console.log('trying get team drivers')
+    let url = `${BASE_URL}teamdrivers/`
     return await tryCatchFetch(url, getTokenInit(token))
   }
 
@@ -194,10 +227,50 @@ const getTokenInit = (token) => {
   }
 
   const updateFantasyTeam = async(fantasyTeamID, updatedFantasyTeamParams, token) => {
+    console.log("test update fantasy team")
+    console.log(fantasyTeamID, updatedFantasyTeamParams, token)
     let url = `${BASE_URL}teams/${fantasyTeamID}/`
     let init = getTokenInit(token)
     init["method"] = "PUT"
     init["body"] = JSON.stringify(updatedFantasyTeamParams)
+    return await tryCatchFetch(url, init)
+  }
+
+  const createCurrentDrivers = async( updatedCurrentDrivers, token) => {
+    console.log("test update current drivers")
+    console.log(updatedCurrentDrivers, token)
+    let url = `${BASE_URL}drivers/`
+    let init = getTokenInit(token)
+    init["method"] = "POST"
+    init["body"] = JSON.stringify(updatedCurrentDrivers)
+    return await tryCatchFetch(url, init)
+  }
+
+  const deleteCurrentDrivers = async(driverId, token) => {
+    console.log("test delete current driver")
+    console.log(driverId, token)
+    let url = `${BASE_URL}drivers/${driverId}`
+    let init = getTokenInit(token)
+    init["method"] = "DELETE"
+    return await tryCatchFetch(url, init)
+  }
+
+  const createCurrentConstructors = async( updatedCurrentConstructors, token) => {
+    console.log("test update current constructors")
+    console.log(updatedCurrentConstructors, token)
+    let url = `${BASE_URL}constructors/`
+    let init = getTokenInit(token)
+    init["method"] = "POST"
+    init["body"] = JSON.stringify(updatedCurrentConstructors)
+    return await tryCatchFetch(url, init)
+  }
+
+  const deleteCurrentConstructors = async(constructorId, token) => {
+    console.log("test delete current driver")
+    console.log(constructorId, token)
+    let url = `${BASE_URL}constructors/${constructorId}`
+    let init = getTokenInit(token)
+    init["method"] = "DELETE"
     return await tryCatchFetch(url, init)
   }
 
@@ -208,6 +281,14 @@ const getTokenInit = (token) => {
     return await tryCatchFetch(url, init)
   }
 
+  const createTeamDrivers = async (newTeamDriverParams, token) => {
+    let url = `${BASE_URL}teamdrivers/`
+    let init = getTokenInit(token)
+    init["method"] = "POST"
+    init["body"] = JSON.stringify(newTeamDriverParams)
+      return await tryCatchFetch(url, init)
+    }
+
  
 
   const myExport = {
@@ -217,6 +298,7 @@ const getTokenInit = (token) => {
     getRaceByRound,
     getQualiByRound,
     getCurrentDrivers,
+    getCurrentConstructors,
     getRecentResults,
     getDriverStandings,
     getTeamStandings,
@@ -233,6 +315,15 @@ const getTokenInit = (token) => {
     createFantasyTeam,
     updateFantasyTeam,
     deleteFantasyTeam,
+    createCurrentDrivers,
+    deleteCurrentDrivers,
+    deleteCurrentConstructors,
+    createCurrentConstructors,
+    getDriversBackend,
+    getConstructorsBackend,
+    createTeamDrivers,
+    getBackendTeamDrivers,
+    updateDriversBackend,
 
 
   }

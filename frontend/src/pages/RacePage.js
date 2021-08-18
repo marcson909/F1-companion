@@ -5,6 +5,11 @@ import FormulaAPI from '../apis/FormulaAPI'
 import UserContext from "../contexts/UserContext"
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
+import Button from "react-bootstrap/Button"
+import Offcanvas from 'react-bootstrap/Offcanvas'
+
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import googleKey from '../hidden'
 
 import NavComponent from "../components/NavComponent"
 import RaceResultsList from "../components/RaceResultsList"
@@ -16,6 +21,10 @@ const RacePage = (props) => {
     const [race, setRace] = useState(null)
     const [qual, setQual] = useState(null)
     const user = useContext(UserContext)
+    const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
 
   useEffect(() => {
@@ -58,27 +67,28 @@ const RacePage = (props) => {
     getQualiInfo();
   }, [])
 
-   // const renderRaceCircuit = () => {
-  //   console.log(race)
-  //   let circuit = race.Circuit.map((item, index) => {
+  //  Google Maps API implementation
+  const MapContainer = () => {  
+      const mapStyles = {        
+        height: "100%",
+        width: "100%"};
       
-  //     return (
-  //       <li key={`task-${index}`}>
-  //         <Link to={`/todo/${list.id}/tasks/${task.id}`}>{task.task_name}</Link>
-  //       </li>
-  //     )
-  //   })
-
-    // console.log(raceItems)
-
-  //   return (
-  //     <ul className="simple-list">
-  //       {/* { taskElements } */}
-  //       Race Items Go Here
-  //     </ul>
-  //   )
-  // }
-
+      const defaultCenter = {
+        lat: parseFloat(race.Circuit.Location.lat), lng: parseFloat(race.Circuit.Location.long)
+      }
+      return (
+         <LoadScript
+           googleMapsApiKey={googleKey}>
+            <GoogleMap
+              mapContainerStyle={mapStyles}
+              mapTypeId="satellite"
+              zoom={15}
+              center={defaultCenter}>
+              <Marker position={defaultCenter}/>
+              </GoogleMap>
+          </LoadScript>
+      )
+    }
  
   const renderRaceList = () => {
     if (!race || !qual) {
@@ -92,6 +102,17 @@ const RacePage = (props) => {
         <h3>Round: {race.round}</h3>
         <h3>{race.date}</h3>
         <h3>{race.time}</h3>
+        <Button variant="primary" onClick={handleShow}>
+        {race.Circuit.circuitName}
+      </Button>
+      <Offcanvas show={show} onHide={handleClose} backdrop={false}>
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>{race.Circuit.circuitName}</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body id="map">
+        {MapContainer()}
+        </Offcanvas.Body>
+      </Offcanvas>
         <div>
           <Tabs defaultActiveKey="race" id="tabs" className="mb-3 nav-fill">
             <Tab eventKey="race" title="Race" >

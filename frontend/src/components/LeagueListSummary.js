@@ -7,7 +7,15 @@ const LeagueListSummary = (props) => {
   return (
     <div>
       <ListGroup.Item>
-        <Link to={`/leagues/${props.league.id}`}>{props.league.name}</Link>
+        {/* <Link to={`/leagues/${props.league.id}`}>{props.league.name}</Link> */}
+        <Link to={{
+          pathname:`/leagues/${props.league.id}`,
+          state: { backendDrivers: props.backendDrivers,
+          backendConstructors: props.backendConstructors,
+        },
+        }} className="text-decoration-none"
+        >{props.league.name}
+        </Link>
       </ListGroup.Item>
     </div>
   );
